@@ -13,11 +13,12 @@
    <children>
       <Pane prefHeight="477.0" prefWidth="654.0">
          <children>
-            <Label layoutX="236.0" layoutY="83.0" text="Label" />
             <MenuBar layoutY="2.0">
               <menus>
                 <Menu mnemonicParsing="false" text="File">
                   <items>
+                        <MenuItem fx:id="menuItemNew" mnemonicParsing="false" text="New" />
+                        <SeparatorMenuItem mnemonicParsing="false" />
                         <MenuItem fx:id="menuItemOpen" mnemonicParsing="false" onAction="#openCSVFile" text="Open CSV..." />
                         <SeparatorMenuItem mnemonicParsing="false" />
                         <MenuItem mnemonicParsing="false" text="Save" />
@@ -33,6 +34,12 @@
                 </Menu>
               </menus>
             </MenuBar>
+            <TableView layoutY="27.0" prefHeight="451.0" prefWidth="654.0">
+              <columns>
+                <TableColumn prefWidth="75.0" text="C1" />
+                <TableColumn prefWidth="75.0" text="C2" />
+              </columns>
+            </TableView>
          </children></Pane>
    </children>
 </GridPane>

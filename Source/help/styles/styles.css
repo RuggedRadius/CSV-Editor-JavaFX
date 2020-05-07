@@ -1,0 +1,26 @@
+* 
+{
+    margin: 0;
+    padding: 0;
+    border: 0;
+
+    font-family: 'Muli', sans-serif;
+}
+
+body
+{
+    background: gray;
+}
+
+#header
+{
+    width: 100vw;
+    height: 40px;
+
+    background: black;
+}
+
+#main
+{
+    width: 100vw;
+}
