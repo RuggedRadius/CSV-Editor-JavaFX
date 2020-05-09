@@ -1,22 +1,27 @@
 package sample;
 
-import com.opencsv.CSVReaderHeaderAware;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
+import javafx.scene.control.cell.PropertyValueFactory;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.text.TableView;
+
+import javafx.scene.control.TableView;
+
 import java.io.*;
-import java.util.Map;
-import java.util.Scanner;
 
 public class Controller
 {
     private TableView tblMain;
+    private ObservableList<Row> data;
+
 
     @FXML
     private void initialize() {
@@ -69,33 +74,44 @@ public class Controller
 
     private void loadCSVToTableView(File file)
     {
-
-
-
+        // Clear TableView
+        initialiseTableView();
 
         try (FileReader fr = new FileReader(file))
         {
             // Use 3rd party library to read .csv file into iterable data structure
-            Iterable<CSVRecord> records = CSVFormat.EXCEL.parse(fr);
+//            Iterable<CSVRecord> records = CSVFormat.EXCEL.parse(fr);
+            Iterable<CSVRecord> records = CSVFormat.RFC4180.withFirstRecordAsHeader().parse(fr);
+
 
             // Print headers
-            // ...
+//            String[] headers = records.iterator().next().toString().split(",");
+//            for (String header: headers) {
+//                addColumnToTable(header);
+//            }
 
-            TableRow newRow = new TableRow();
+
+            // Declare new row
+            Row newRow;
 
             // For each row..
             for (CSVRecord record : records)
             {
-                // For each cell
+                // Create new row
+                newRow = new Row(record.size());
+
+                // For each cell in new row..
                 for (int i = 0; i < record.size(); i++)
                 {
                     // TEMP DEBUG ONLY
                     System.out.println(record.get(i));
 
-                    // Add value to new TableView row
-                    // ...
+                    // Print value to row cell
+                    newRow.cells[i] = record.get(i);
                 }
 
+                // Add row to data
+                data.add(newRow);
             }
         }
         catch (FileNotFoundException ex)
@@ -109,17 +125,37 @@ public class Controller
         }
     }
 
-    private void saveCSVToFile(File file)
-    {
+    private void saveCSVToFile(File file) {
         // Maybe directory and string for file name instead?
         // We'll see
         // ...
     }
 
-    private void initialiseTableView()
-    {
-        // Clear all data in the TableView
+    private void initialiseTableView() {
+        // Create if doesnt exist
+        if (tblMain == null)
+        {
+            tblMain = new TableView();
+        }
 
+        // Set data
+        data = FXCollections.observableArrayList();
+
+        // Set data
+        tblMain.setItems(data);
+
+//
+//        // Clear all data in the TableView
+//        tblMain.getItems().clear();
+    }
+
+
+    // Table methods
+    private void addColumnToTable(String column) {
+        System.out.println("Adding header '" + column + "' to TableView.");
+        TableColumn newColumn = new TableColumn(column);
+        newColumn.setCellValueFactory(new PropertyValueFactory<>(column));
+        tblMain.getColumns().add(newColumn);
     }
 
 }

@@ -34,7 +34,7 @@
                 </Menu>
               </menus>
             </MenuBar>
-            <TableView fx:id="tblMain" layoutY="27.0" prefHeight="451.0" prefWidth="654.0">
+            <TableView id="tblMain" fx:id="tblMain" editable="true" layoutY="27.0" prefHeight="451.0" prefWidth="654.0">
               <columns>
                 <TableColumn prefWidth="75.0" text="C1" />
                 <TableColumn prefWidth="75.0" text="C2" />
