@@ -1,0 +1,12 @@
+.root{
+    -fx-font-size: 16pt;
+    /*-fx-font-family: "DM Mono";*/
+    -fx-font-family: "Teko";
+    -fx-base: rgb(80, 145, 47);
+    -fx-background: rgb(225, 228, 203);
+}
+
+.tblMain {
+    -fx-font-family: "Teko";
+}
+

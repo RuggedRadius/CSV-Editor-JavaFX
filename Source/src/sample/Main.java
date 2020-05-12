@@ -3,98 +3,42 @@ package sample;
 import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.input.MouseButton;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Material;
+import javafx.scene.paint.PhongMaterial;
+import javafx.scene.shape.Box;
 import javafx.stage.Stage;
 
 
 public class Main extends Application
 {
     @FXML private TableView tblMain;
+    @FXML public AnchorPane apMenu;
+    @FXML public MenuBar menuBar;
 
     @Override
-    public void start(Stage primaryStage) throws Exception{
+    public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
         primaryStage.setTitle("JMC CSV Editor");
-        primaryStage.setScene(new Scene(root));
+
+        Scene scene = new Scene(root);
+        scene.getStylesheets().add("/sample/styles.css");
+        scene.getStylesheets().add("https://fonts.googleapis.com/css2?family=DM+Mono:wght@300&display=swap");
+        scene.getStylesheets().add("https://fonts.googleapis.com/css2?family=Teko:wght@300&display=swap");
+
+        primaryStage.setScene(scene);
         primaryStage.show();
+        primaryStage.setMaximized(true);
     }
 
     public static void main(String[] args) {
         launch(args);
-    }
-
-
-
-    public TableView createTableView(String[] headers)
-    {
-        // Create new TableView
-        TableView tbl = new TableView();
-        tbl.setEditable(true);
-
-        // Create Columns
-        for (int i = 0; i < headers.length; i++) {
-            TableColumn newColumn = new TableColumn(headers[i]);
-            tbl.getColumns().add(newColumn);
-        }
-
-        return tbl;
-    }
-
-
-
-
-    private MenuBar createMenuBar() {
-        // Create bar
-        MenuBar menuBar = new MenuBar();
-
-        // Create FILE menu
-        Menu menuFile = createFileMenu();
-        Menu menuHelp = createHelpMenu();
-
-        // Add menu(s) to menu bar
-        menuBar.getMenus().addAll(menuFile, menuHelp);
-
-        return menuBar;
-    }
-    private Menu createFileMenu() {
-        Menu file = new Menu();
-        file.setText("File");
-
-        // Populate FILE menu
-        MenuItem itmNew = new MenuItem("New");
-        file.getItems().add(itmNew);
-
-        file.getItems().add(new SeparatorMenuItem());
-
-        MenuItem itmLoad = new MenuItem("Load...");
-        file.getItems().add(itmLoad);
-
-        file.getItems().add(new SeparatorMenuItem());
-
-        MenuItem itmSave = new MenuItem("Save");
-        file.getItems().add(itmSave);
-        MenuItem itmSaveAs = new MenuItem("Save As..");
-        file.getItems().add(itmSaveAs);
-
-        file.getItems().add(new SeparatorMenuItem());
-        MenuItem itmExit = new MenuItem("Exit");
-        file.getItems().add(itmExit);
-
-        return file;
-    }
-    private Menu createHelpMenu() {
-        Menu help = new Menu();
-        help.setText("Help");
-
-        // Populate FILE menu
-        MenuItem itmNew = new MenuItem("Help");
-        help.getItems().add(itmNew);
-
-        MenuItem itmLoad = new MenuItem("About");
-        help.getItems().add(itmLoad);
-
-        return help;
     }
 }
