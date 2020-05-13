@@ -3,18 +3,12 @@ package sample;
 import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
-import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.Material;
-import javafx.scene.paint.PhongMaterial;
-import javafx.scene.shape.Box;
 import javafx.stage.Stage;
+import org.junit.jupiter.api.Test;
 
 
 public class Main extends Application
@@ -35,10 +29,9 @@ public class Main extends Application
 
         primaryStage.setScene(scene);
         primaryStage.show();
-        primaryStage.setMaximized(true);
+//        primaryStage.setMaximized(true);
     }
 
-    public static void main(String[] args) {
-        launch(args);
-    }
+
+    public static void main(String[] args) { Application.launch(args); }
 }

@@ -14,6 +14,7 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.CSVRecord;
+import org.junit.jupiter.api.Test;
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
@@ -25,14 +26,11 @@ public class Controller
 {
     public TableView tblMain;
     private ObservableList<Row> data;
-    private int columnLimits = 26; // Any increases to this require modifying the 'Row' class.
+    private int columnLimits = 10; // Any increases to this require modifying the 'Row' class.
     private File currentFile;
 
     // General methods
-    @FXML private void initialize() {
-
-//        TESTLOAD();
-    }
+    @FXML private void initialize() {}
     @FXML private void exitApplication() {
         int result = JOptionPane.showConfirmDialog(
                 null,
@@ -78,10 +76,6 @@ public class Controller
         // Create file chooser dialog
         FileChooser fileChooser = new FileChooser();
 
-        // Set intitial directory to source folder
-        File baseDirectory = new File(getClass().getProtectionDomain().getCodeSource().getLocation().getFile());
-        fileChooser.setInitialDirectory(baseDirectory);
-
         // Set extension filter
         FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("*.csv | Comma Separated Values", "csv");
         fileChooser.setSelectedExtensionFilter(filter);
@@ -90,15 +84,31 @@ public class Controller
         File file = fileChooser.showOpenDialog(null);
         if (file != null)
         {
-            // Load selected file
-            loadCSVToTableView(file);
+            String extension = "";
+
+            int extIndex = file.getName().lastIndexOf('.');
+            if (extIndex > 0)
+            {
+                extension = file.getName().substring(extIndex+1);
+            }
+
+            if (extension.equals("csv"))
+            {
+                // Load selected file
+                loadCSVToTableView(file);
+            }
+            else
+            {
+                // Show error
+                JOptionPane.showMessageDialog(null, "Unsupported file type. Only use .csv (Comma Separated Values) files.", "Unsupported file type", JOptionPane.ERROR_MESSAGE);
+            }
         }
         else
         {
             System.out.println("No file opened");
         }
     }
-    @FXML public void saveCurrentCSVFile() {
+    @FXML private void saveCurrentCSVFile() {
 
         System.out.println("Saving file...");
 
@@ -155,7 +165,7 @@ public class Controller
             e.printStackTrace();
         }
     }
-    @FXML public void saveCSVToNewFile() {
+    @FXML private void saveCSVToNewFile() {
 
 
         FileChooser fileChooser = new FileChooser();
@@ -169,58 +179,49 @@ public class Controller
 
         if (file != null)
         {
-            // Use 3rd party library to write csv to file
-            CSVPrinter csvFilePrinter = null;
-            CSVFormat csvFileFormat = CSVFormat.EXCEL.withHeader();
 
-            try
-            {
-                // Assign components
-                FileWriter fileWriter = new FileWriter(file);
-                csvFilePrinter = new CSVPrinter(fileWriter, csvFileFormat);
+                // Use 3rd party library to write csv to file
+                CSVPrinter csvFilePrinter = null;
+                CSVFormat csvFileFormat = CSVFormat.EXCEL.withHeader();
 
-                // Writing records
-                for (Row row : data)
-                {
-                    // Get row data into string array
-                    String[] rowData = row.getAllColumns();
+                try {
+                    // Assign components
+                    FileWriter fileWriter = new FileWriter(file);
+                    csvFilePrinter = new CSVPrinter(fileWriter, csvFileFormat);
 
-                    // For each column in row...
-                    for (int i = 0; i < columnLimits; i++)
-                    {
-                        try
-                        {
-                            // Write to file
-                            fileWriter.write(rowData[i]);
-                        }
-                        catch (Exception ex)
-                        {
-                            // No data to write to file, totally fine
-                        }
+                    // Writing records
+                    for (Row row : data) {
+                        // Get row data into string array
+                        String[] rowData = row.getAllColumns();
 
-                        // Determine cell ending to write
-                        if (i == rowData.length - 1)
-                        {
-                            // End of row
-                            fileWriter.write("\r\n");
-                        }
-                        else
-                        {
-                            // Not the end of the row
-                            fileWriter.write(",");
+                        // For each column in row...
+                        for (int i = 0; i < columnLimits; i++) {
+                            try {
+                                // Write to file
+                                fileWriter.write(rowData[i]);
+                            } catch (Exception ex) {
+                                // No data to write to file, totally fine
+                            }
+
+                            // Determine cell ending to write
+                            if (i == rowData.length - 1) {
+                                // End of row
+                                fileWriter.write("\r\n");
+                            } else {
+                                // Not the end of the row
+                                fileWriter.write(",");
+                            }
                         }
                     }
+
+                    // Flush and close all the shiznit
+                    fileWriter.flush();
+                    fileWriter.close();
+                    csvFilePrinter.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
 
-                // Flush and close all the shiznit
-                fileWriter.flush();
-                fileWriter.close();
-                csvFilePrinter.close();
-            }
-            catch (IOException e)
-            {
-                e.printStackTrace();
-            }
         }
     }
     @FXML private void loadCSVToTableView(File file) {
@@ -278,7 +279,7 @@ public class Controller
         tblMain.getItems().clear();
 
         // Create the columns...
-        createColumns(26);
+        createColumns(columnLimits);
 
         // Assign new data
         data = FXCollections.observableArrayList();
@@ -288,6 +289,8 @@ public class Controller
         tblMain.setEditable(true);
     }
     @FXML private void addRowToTable() {
+        if (data == null)
+            initialiseTableView();
 
         // Create Row
         Row myRow = new Row();
@@ -374,62 +377,66 @@ public class Controller
             case 74:
                 myRow.setColJ(newValue);
                 break;
-            case 75:
-                myRow.setColK(newValue);
-                break;
-            case 76:
-                myRow.setColL(newValue);
-                break;
-            case 77:
-                myRow.setColM(newValue);
-                break;
-            case 78:
-                myRow.setColN(newValue);
-                break;
-            case 79:
-                myRow.setColO(newValue);
-                break;
-            case 80:
-                myRow.setColP(newValue);
-                break;
-            case 81:
-                myRow.setColQ(newValue);
-                break;
-            case 82:
-                myRow.setColR(newValue);
-                break;
-            case 83:
-                myRow.setColS(newValue);
-                break;
-            case 84:
-                myRow.setColT(newValue);
-                break;
-            case 85:
-                myRow.setColU(newValue);
-                break;
-            case 86:
-                myRow.setColV(newValue);
-                break;
-            case 87:
-                myRow.setColW(newValue);
-                break;
-            case 88:
-                myRow.setColX(newValue);
-                break;
-            case 89:
-                myRow.setColY(newValue);
-                break;
-            case 90:
-                myRow.setColZ(newValue);
-                break;
+//            case 75:
+//                myRow.setColK(newValue);
+//                break;
+//            case 76:
+//                myRow.setColL(newValue);
+//                break;
+//            case 77:
+//                myRow.setColM(newValue);
+//                break;
+//            case 78:
+//                myRow.setColN(newValue);
+//                break;
+//            case 79:
+//                myRow.setColO(newValue);
+//                break;
+//            case 80:
+//                myRow.setColP(newValue);
+//                break;
+//            case 81:
+//                myRow.setColQ(newValue);
+//                break;
+//            case 82:
+//                myRow.setColR(newValue);
+//                break;
+//            case 83:
+//                myRow.setColS(newValue);
+//                break;
+//            case 84:
+//                myRow.setColT(newValue);
+//                break;
+//            case 85:
+//                myRow.setColU(newValue);
+//                break;
+//            case 86:
+//                myRow.setColV(newValue);
+//                break;
+//            case 87:
+//                myRow.setColW(newValue);
+//                break;
+//            case 88:
+//                myRow.setColX(newValue);
+//                break;
+//            case 89:
+//                myRow.setColY(newValue);
+//                break;
+//            case 90:
+//                myRow.setColZ(newValue);
+//                break;
             default:
                 break;
         }
     }
 
-    // DEBUG ONLY
-    private void TESTLOAD() {
-        currentFile = new File("C:\\Users\\Ben\\Documents\\GitHub\\JavaIII_AT2.6\\Source\\out\\production\\Source\\Test.csv");
-        loadCSVToTableView(currentFile);
+    // JUnit Testing
+    @Test
+    private void testAddRow()
+    {
+        initialiseTableView();
+        assert(data.size() == 0);
+        addColumnToTable("Tester");
+        assert(data.size() > 0);
     }
 }
