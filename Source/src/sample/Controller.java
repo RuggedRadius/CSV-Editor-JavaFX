@@ -429,14 +429,4 @@ public class Controller
                 break;
         }
     }
-
-    // JUnit Testing
-    @Test
-    private void testAddRow()
-    {
-        initialiseTableView();
-        assert(data.size() == 0);
-        addColumnToTable("Tester");
-        assert(data.size() > 0);
-    }
 }
