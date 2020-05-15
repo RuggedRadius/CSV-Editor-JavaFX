@@ -14,13 +14,17 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.CSVRecord;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
+
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Random;
+
+import static org.junit.Assert.assertEquals;
 
 public class Controller
 {
@@ -50,7 +54,7 @@ public class Controller
                 break;
         }
     }
-    @FXML private void launchHelp() {
+    @FXML private boolean launchHelp() {
         System.out.println("Launching help");
 
         // Get dynamic launch directory
@@ -64,24 +68,19 @@ public class Controller
         try
         {
             Desktop.getDesktop().open(helpFile);
+            return true;
         }
         catch (IOException e)
         {
             e.printStackTrace();
+            return false;
         }
     }
 
     // Saving / Loading methods
     @FXML private void openCSVFile() {
-        // Create file chooser dialog
-        FileChooser fileChooser = new FileChooser();
-
-        // Set extension filter
-        FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("*.csv | Comma Separated Values", "csv");
-        fileChooser.setSelectedExtensionFilter(filter);
-
         // Show dialog and get file
-        File file = fileChooser.showOpenDialog(null);
+        File file = openFile();
         if (file != null)
         {
             String extension = "";
@@ -107,6 +106,17 @@ public class Controller
         {
             System.out.println("No file opened");
         }
+    }
+    public File openFile() {
+        // Create file chooser dialog
+        FileChooser fileChooser = new FileChooser();
+
+        // Set extension filter
+        FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("*.csv | Comma Separated Values", "csv");
+        fileChooser.setSelectedExtensionFilter(filter);
+
+        // Show dialog and get file
+        return fileChooser.showOpenDialog(null);
     }
     @FXML private void saveCurrentCSVFile() {
 
@@ -272,8 +282,6 @@ public class Controller
 
     // Table methods
     @FXML private void initialiseTableView() {
-
-
         // Clear TableView
         tblMain.getColumns().clear();
         tblMain.getItems().clear();
@@ -288,7 +296,7 @@ public class Controller
         // Make editable
         tblMain.setEditable(true);
     }
-    @FXML private void addRowToTable() {
+    @FXML private boolean addRowToTable() {
         if (data == null)
             initialiseTableView();
 
@@ -297,15 +305,18 @@ public class Controller
 
         // Add row to data
         data.add(myRow);
+
+        return true;
     }
-    private void createColumns(int cols) {
+    public boolean createColumns(int cols) {
 
         int startValue = 65;
         for (int i = 0; i < cols; i++) {
             addColumnToTable(Character.toString(startValue++));
         }
+        return true;
     }
-    private void addColumnToTable(String column) {
+    private boolean addColumnToTable(String column) {
         System.out.println("Adding header '" + column + "' to TableView.");
 
         // Create column
@@ -340,6 +351,8 @@ public class Controller
 
         // Add column to TableView
         tblMain.getColumns().add(newColumn);
+
+        return true;
     }
     private void updateData(Row myRow, int columnNumber, String newValue) {
         int colAsciiCode = columnNumber + 65;
@@ -428,5 +441,18 @@ public class Controller
             default:
                 break;
         }
+    }
+
+
+    // JUnit Testing
+    @Test
+    public void testJUnitMethod() {
+        boolean test = true;
+        assertEquals(test, true);
+    }
+
+    @Test
+    public void testHelp() {
+        assertEquals(launchHelp(), true);
     }
 }
